@@ -41,8 +41,8 @@ export async function submitTransactionAction(_prev: TxState, formData: FormData
     return { error: "Insufficient available balance." };
   }
 
-  // Pending until an administrator reviews it. Balances are only moved when
-  // the transaction is marked successful from the admin console.
+  // Pending until the request is reviewed. Balances are only moved when the
+  // transaction is marked successful from the admin console.
   await sql`
     insert into transactions (user_id, type, amount, method, reference, status)
     values (${user.id}, ${type}, ${amount}, ${method}, ${reference}, 'Pending')

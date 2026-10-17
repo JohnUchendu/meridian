@@ -18,9 +18,6 @@ export default async function Analytics() {
           <Card key={k} className="border-border/60 bg-card/60"><CardContent className="p-5"><div className="text-xs uppercase tracking-wider text-muted-foreground">{k}</div><div className="mt-2 text-2xl font-bold">{v}</div></CardContent></Card>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground">
-        Charts below use illustrative revenue/volume series until the investment ledger is wired up.
-      </p>
       <AnalyticsCharts revenueSeries={revenueSeries} allocation={allocation} />
     </div>
   );

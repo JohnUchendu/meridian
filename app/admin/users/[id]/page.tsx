@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { sql } from "@/db/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { EditUserForm } from "@/components/admin/EditUserForm";
+import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
 
 export default async function EditUserPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -37,6 +38,18 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
             balanceAvailable={Number(user.balance_available)}
             balanceTrading={Number(user.balance_trading)}
             balanceBonus={Number(user.balance_bonus)}
+          />
+        </CardContent>
+      </Card>
+      <Card className="border-border/60 bg-card/60">
+        <CardContent className="p-5">
+          <div className="font-semibold">Reset password</div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Set a new password for this account. The current password stops working immediately.
+          </p>
+          <ResetPasswordForm
+            userId={user.id as string}
+            userName={`${user.first_name as string} ${user.last_name as string}`.trim()}
           />
         </CardContent>
       </Card>

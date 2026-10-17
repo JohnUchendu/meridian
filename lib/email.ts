@@ -1,7 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
 
-// Email is optional: local demos and previews run without a Resend key.
+// Email is optional: local development and previews run without a Resend key.
 // When RESEND_API_KEY is absent, sends are logged and skipped rather than
 // throwing inside a server action.
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;

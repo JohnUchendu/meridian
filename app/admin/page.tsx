@@ -31,9 +31,6 @@ export default async function AdminHome() {
           </CardContent></Card>
         ))}
       </div>
-      <p className="text-sm text-muted-foreground">
-        Revenue/volume time-series charts still use demo data (<code>lib/market-data.ts</code>) since there&apos;s no trading engine generating real daily P/L yet — see <code>/admin/analytics</code>.
-      </p>
     </div>
   );
 }

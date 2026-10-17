@@ -35,7 +35,7 @@ export default async function DepositPage() {
                 <div>
                   <h3 className="text-base font-semibold">Confirm your deposit</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    After sending the payment, tell us the amount and an optional reference. An administrator will verify it and mark the deposit successful.
+                    After sending the payment, enter the amount and an optional reference so it can be matched to your deposit.
                   </p>
                   <div className="mt-4">
                     <DepositForm type="Deposit" />
@@ -49,19 +49,18 @@ export default async function DepositPage() {
                 <div>
                   <h3 className="text-base font-semibold">Request a withdrawal</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Choose how you want to be paid. Your balance is only debited once an administrator approves the request.
+                    Choose how you want to be paid and enter the amount.
                   </p>
                   <div className="mt-4">
                     <DepositForm type="Withdrawal" />
                   </div>
                 </div>
                 <div className="rounded-xl border border-border/60 bg-background/40 p-5">
-                  <div className="text-sm font-semibold">How withdrawals work</div>
+                  <div className="text-sm font-semibold">Payout details</div>
                   <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                    <li>• Submit the amount and payout method.</li>
-                    <li>• Your request appears as <span className="font-medium text-foreground">Pending</span> in history.</li>
-                    <li>• An administrator reviews and marks it <span className="font-medium text-foreground">Successful</span>.</li>
-                    <li>• The amount is then deducted from your available balance.</li>
+                    <li>• Bank wires typically settle in 1–2 business days.</li>
+                    <li>• Crypto payouts are sent to the wallet address on file.</li>
+                    <li>• Track every request under History.</li>
                   </ul>
                 </div>
               </div>

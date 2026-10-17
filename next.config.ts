@@ -8,8 +8,9 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // Education was removed from the platform.
+      // Removed pages redirect to the homepage.
       { source: "/education", destination: "/", permanent: true },
+      { source: "/markets", destination: "/", permanent: true },
     ];
   },
 };

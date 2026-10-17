@@ -5,7 +5,6 @@ import { Menu, TrendingUp } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const nav = [
-  { href: "/markets", label: "Markets" },
   { href: "/platforms", label: "Platforms" },
   { href: "/investments", label: "Investments" },
   { href: "/pricing", label: "Pricing" },

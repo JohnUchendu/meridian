@@ -71,14 +71,18 @@ export default async function Overview() {
             txRows.map((r, i) => {
               const isDeposit = r.type === "Deposit";
               return (
-                <div key={i} className="grid grid-cols-4 items-center border-b border-border/40 px-5 py-3 text-sm last:border-0">
-                  <div className="flex items-center gap-2">
-                    {isDeposit ? <ArrowDownLeft className="h-4 w-4 text-success" /> : <ArrowUpRight className="h-4 w-4 text-[color:var(--gold)]" />}
+                <div key={i} className="grid grid-cols-2 items-center gap-x-3 gap-y-1.5 border-b border-border/40 px-5 py-3 text-sm last:border-0 sm:grid-cols-4 sm:gap-y-0">
+                  <div className="flex min-w-0 items-center gap-2 font-medium">
+                    {isDeposit ? <ArrowDownLeft className="h-4 w-4 shrink-0 text-success" /> : <ArrowUpRight className="h-4 w-4 shrink-0 text-[color:var(--gold)]" />}
                     {r.type as string}
                   </div>
-                  <div className="tabular-nums">${Number(r.amount).toFixed(2)}</div>
-                  <div className="text-muted-foreground">{r.method as string}</div>
-                  <div><Badge variant={statusVariant(r.status as string)}>{r.status as string}</Badge></div>
+                  <div className="text-right font-semibold tabular-nums sm:text-left">
+                    {isDeposit ? "+" : "−"}${Number(r.amount).toFixed(2)}
+                  </div>
+                  <div className="min-w-0 truncate text-xs text-muted-foreground sm:text-sm">{r.method as string}</div>
+                  <div className="flex justify-end sm:justify-start">
+                    <Badge variant={statusVariant(r.status as string)}>{r.status as string}</Badge>
+                  </div>
                 </div>
               );
             })

@@ -27,16 +27,6 @@ export default async function WalletPage() {
           </Card>
         ))}
       </div>
-      <Card className="border-border/60 bg-card/60">
-        <CardContent className="p-5">
-          <div className="font-semibold">Transfer between wallets</div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Internal transfers between Available/Trading/Bonus balances aren&apos;t wired to the database yet —
-            deposits and withdrawals (which are real) live on the{" "}
-            <a href="/dashboard/deposit" className="text-[color:var(--gold)] hover:underline">Deposit &amp; Withdraw</a> page.
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -35,9 +35,6 @@ export default async function Portfolio() {
           </div>
         </CardContent>
       </Card>
-      <p className="text-xs text-muted-foreground">
-        Performance chart and allocation still use demo data — the total/available/trading balance cards above are real, pulled from your account.
-      </p>
     </div>
   );
 }

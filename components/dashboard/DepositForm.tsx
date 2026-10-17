@@ -12,7 +12,7 @@ export function DepositForm({ type }: { type: "Deposit" | "Withdrawal" }) {
 
   useEffect(() => {
     if (state?.success) {
-      toast.success(type === "Deposit" ? "Deposit submitted for review" : "Withdrawal requested");
+      toast.success(type === "Deposit" ? "Deposit submitted" : "Withdrawal requested");
       formRef.current?.reset();
     }
     if (state?.error) toast.error(state.error);
@@ -71,8 +71,8 @@ export function DepositForm({ type }: { type: "Deposit" | "Withdrawal" }) {
       </div>
       <p className="text-[11px] text-muted-foreground">
         {type === "Deposit"
-          ? "Your deposit stays pending until an administrator marks it successful."
-          : "Funds stay in your available balance until an administrator approves the withdrawal."}
+          ? "Your balance updates as soon as your payment is confirmed."
+          : "Withdrawals are paid to your selected payout method."}
       </p>
     </form>
   );

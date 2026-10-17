@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/db/client";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, hashPassword } from "@/lib/auth";
 
 async function assertAdmin() {
   const user = await getCurrentUser();
@@ -61,4 +61,44 @@ export async function deleteUserAction(userId: string) {
   await assertAdmin();
   await sql`delete from users where id = ${userId}`;
   revalidatePath("/admin/users");
+}
+
+const passwordSchema = z
+  .object({
+    userId: z.string().uuid(),
+    password: z.string().min(8, "Password must be at least 8 characters.").max(72, "Password must be 72 characters or fewer."),
+    confirm: z.string(),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords do not match.",
+    path: ["confirm"],
+  });
+
+export type ResetPasswordState = { error?: string; success?: boolean } | undefined;
+
+/**
+ * Lets an admin set a new password for any client or admin account.
+ * Replaces the stored bcrypt hash immediately.
+ */
+export async function resetUserPasswordAction(
+  _prev: ResetPasswordState,
+  formData: FormData,
+): Promise<ResetPasswordState> {
+  await assertAdmin();
+
+  const parsed = passwordSchema.safeParse({
+    userId: formData.get("userId"),
+    password: formData.get("password"),
+    confirm: formData.get("confirm"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Enter a valid password." };
+  }
+
+  const passwordHash = await hashPassword(parsed.data.password);
+  await sql`update users set password_hash = ${passwordHash} where id = ${parsed.data.userId}`;
+
+  revalidatePath(`/admin/users/${parsed.data.userId}`);
+  revalidatePath("/admin/users");
+  return { success: true };
 }

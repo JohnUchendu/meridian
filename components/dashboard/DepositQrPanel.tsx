@@ -47,7 +47,7 @@ export function DepositQrPanel({
         </Button>
       </div>
       <p className="mt-3 text-[11px] text-muted-foreground">
-        Deposits are confirmed manually by our team. Your balance updates once the payment is approved.
+        Your balance updates as soon as the payment is confirmed.
       </p>
     </div>
   );

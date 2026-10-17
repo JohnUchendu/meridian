@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Ticker } from "@/components/site/Ticker";
+import { LivePrices } from "@/components/site/LivePrices";
 import { HeroChart } from "@/components/site/Chart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getLivePrices } from "@/lib/live-prices";
 import {
-  Activity, ArrowRight, BarChart3, Bitcoin, Briefcase, Check, ChevronRight,
+  Activity, ArrowRight, BarChart3, Bitcoin, Briefcase, Check,
   CircleDollarSign, Coins, Globe2, GraduationCap, LineChart, ShieldCheck,
   Smartphone, Sparkles, Star, TrendingUp, Users, Zap,
 } from "lucide-react";
@@ -51,7 +53,9 @@ const testimonials = [
   { name: "Naomi Tanaka", role: "Wealth Advisor, Tokyo", quote: "Managed portfolios have delivered a consistent risk-adjusted return for my HNW clients." },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const market = await getLivePrices();
+
   return (
     <SiteLayout>
       <section className="relative overflow-hidden gradient-navy">
@@ -102,15 +106,7 @@ export default function LandingPage() {
                   <Badge className="bg-[color:var(--gold)]/15 text-[color:var(--gold)] hover:bg-[color:var(--gold)]/15">Live</Badge>
                 </div>
                 <div className="mt-4"><HeroChart /></div>
-                <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-                  {[["Gold","2384.12","+0.72%"],["S&P 500","5,487","+0.18%"],["BTC","68,421","+2.14%"]].map((r, i) => (
-                    <div key={i} className="rounded-lg border border-border/60 bg-background/40 p-3">
-                      <div className="text-xs text-muted-foreground">{r[0]}</div>
-                      <div className="mt-0.5 font-semibold tabular-nums">{r[1]}</div>
-                      <div className="text-xs text-success">{r[2]}</div>
-                    </div>
-                  ))}
-                </div>
+                <LivePrices initialPrices={market.prices} initialUpdatedAt={market.updatedAt} />
               </div>
               <div className="absolute -right-6 -top-6 hidden h-32 w-32 rounded-full bg-[color:var(--gold)]/20 blur-3xl lg:block animate-float" />
             </div>
@@ -145,9 +141,6 @@ export default function LandingPage() {
                   <Meta k="Leverage" v={m.leverage} />
                   <Meta k="Hours" v={m.hours} />
                 </div>
-                <Link href="/markets" className="mt-5 inline-flex items-center text-sm font-medium text-[color:var(--gold)] hover:underline">
-                  Learn more <ChevronRight className="ml-0.5 h-4 w-4" />
-                </Link>
               </CardContent>
             </Card>
           ))}
@@ -233,10 +226,10 @@ export default function LandingPage() {
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
           <TrendingUp className="mx-auto h-10 w-10 text-[color:var(--gold)]" />
           <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Ready to grow your wealth?</h2>
-          <p className="mt-3 text-muted-foreground">Open a free demo in seconds or fund a live account and start investing in under 5 minutes.</p>
+          <p className="mt-3 text-muted-foreground">Open an account in seconds and start investing in under 5 minutes.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" asChild><Link href="/auth">Open Live Account</Link></Button>
-            <Button size="lg" variant="outline" asChild><Link href="/auth">Try Demo</Link></Button>
+            <Button size="lg" variant="outline" asChild><Link href="/pricing">View Investment Plans</Link></Button>
           </div>
         </div>
       </section>

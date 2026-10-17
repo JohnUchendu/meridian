@@ -13,7 +13,7 @@ export type SqlClient = (
  *   const rows = await sql`select * from users where id = ${id}`;
  *
  * When DATABASE_URL is set the app talks to Neon over its HTTP driver.
- * When it isn't (local development / demos) queries are served by an
+ * When it isn't (local development) queries are served by an
  * embedded PGlite database persisted to .pglite/. Both speak Postgres.
  */
 export const sql: SqlClient = process.env.DATABASE_URL
