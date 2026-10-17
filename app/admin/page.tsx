@@ -22,7 +22,7 @@ export default async function AdminHome() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold">Admin overview</h1><p className="text-sm text-muted-foreground">Real-time platform metrics from Neon.</p></div>
+      <div><h1 className="text-2xl font-bold">Admin overview</h1><p className="text-sm text-muted-foreground">Real-time platform metrics.</p></div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => (
           <Card key={k.label} className="border-border/60 bg-card/60"><CardContent className="p-5">

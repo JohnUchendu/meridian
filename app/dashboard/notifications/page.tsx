@@ -1,30 +1,54 @@
+import { getCurrentUser } from "@/lib/auth";
+import { sql } from "@/db/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bell, TrendingDown, TrendingUp, Newspaper } from "lucide-react";
+import { Bell } from "lucide-react";
 
-const notifications = [
-  { icon: TrendingUp, title: "EUR/USD hit your alert 1.0850", time: "2 min ago", tone: "success" },
-  { icon: TrendingDown, title: "Margin usage above 60%", time: "1 hour ago", tone: "warn" },
-  { icon: Newspaper, title: "FOMC decision at 19:00 UTC", time: "3 hours ago", tone: "info" },
-  { icon: Bell, title: "Withdrawal request approved", time: "Yesterday", tone: "success" },
-];
+function formatDate(value: unknown) {
+  const date = value instanceof Date ? value : new Date(String(value));
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleString();
+}
 
-export default function Notif() {
+export default async function NotificationsPage() {
+  const user = await getCurrentUser();
+  const notifications = user
+    ? await sql`
+        select title, message, created_at from notifications
+        where user_id = ${user.id} or user_id is null
+        order by created_at desc
+        limit 50
+      `
+    : [];
+
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold">Notifications</h1><p className="text-sm text-muted-foreground">Price alerts, margin calls, order executions and system messages.</p></div>
+      <div>
+        <h1 className="text-2xl font-bold">Notifications</h1>
+        <p className="text-sm text-muted-foreground">Messages from the Meridian Capital team.</p>
+      </div>
       <Card className="border-border/60 bg-card/60">
         <CardContent className="p-0">
-          {notifications.map((n, i) => (
-            <div key={i} className="flex items-start gap-3 border-b border-border/40 px-5 py-4 last:border-0">
-              <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${n.tone === "success" ? "bg-success/10 text-success" : n.tone === "warn" ? "bg-destructive/10 text-destructive" : "bg-[color:var(--gold)]/10 text-[color:var(--gold)]"}`}>
-                <n.icon className="h-4 w-4" />
-              </div>
-              <div className="flex-1"><div className="text-sm font-medium">{n.title}</div><div className="text-xs text-muted-foreground">{n.time}</div></div>
+          {notifications.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 px-5 py-12 text-center">
+              <Bell className="h-6 w-6 text-muted-foreground" />
+              <div className="text-sm font-medium">No notifications yet</div>
+              <p className="text-xs text-muted-foreground">Updates from our team will appear here.</p>
             </div>
-          ))}
+          ) : (
+            notifications.map((n, i) => (
+              <div key={i} className="flex items-start gap-3 border-b border-border/40 px-5 py-4 last:border-0">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--gold)]/10 text-[color:var(--gold)]">
+                  <Bell className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-medium">{String(n.title)}</div>
+                  <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">{String(n.message)}</p>
+                  <div className="mt-1 text-xs text-muted-foreground/70">{formatDate(n.created_at)}</div>
+                </div>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
-      <p className="text-xs text-muted-foreground">Demo notifications — wire to a real <code>notifications</code> table when price alerts / order events exist.</p>
     </div>
   );
 }

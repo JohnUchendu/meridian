@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
-  BarChart3, CheckSquare, LayoutDashboard, LogOut, Menu,
+  BarChart3, Bell, CheckSquare, LayoutDashboard, LogOut, Menu,
   Settings, ShieldCheck, TrendingUp, Users, Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ const nav: { section: string; items: { to: string; label: string; icon: LucideIc
   { section: "Operations", items: [
     { to: "/admin/users", label: "Users", icon: Users },
     { to: "/admin/deposits", label: "Deposits & Withdrawals", icon: Wallet },
+    { to: "/admin/notifications", label: "Notifications", icon: Bell },
     { to: "/admin/kyc", label: "KYC Review", icon: ShieldCheck },
   ]},
   { section: "System", items: [

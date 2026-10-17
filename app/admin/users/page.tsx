@@ -36,7 +36,7 @@ export default async function AdminUsers() {
               <div className="text-xs text-muted-foreground">{u.email as string}</div>
             </div>
             <div className="col-span-2">
-              <Badge variant="outline" className={u.tier === "VIP" ? "border-[color:var(--gold)]/40 text-[color:var(--gold)]" : "border-border/60"}>{u.tier as string}</Badge>
+              <Badge variant="outline" className="border-border/60">{u.tier as string}</Badge>
             </div>
             <div className="col-span-2">
               <Badge variant={u.kyc_status === "Verified" ? "outline" : "secondary"} className={u.kyc_status === "Verified" ? "border-success/40 text-success" : ""}>{u.kyc_status as string}</Badge>

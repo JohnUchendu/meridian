@@ -21,11 +21,11 @@ export const equityCurve = Array.from({ length: 40 }, (_, i) => {
   return { day: `D${i + 1}`, value: Math.round(base + drift + noise) };
 });
 export const allocation = [
-  { name: "Forex", value: 38 },
-  { name: "Stocks", value: 24 },
-  { name: "Crypto", value: 14 },
-  { name: "Commodities", value: 12 },
+  { name: "Stocks", value: 38 },
+  { name: "Crypto", value: 24 },
+  { name: "Commodities", value: 18 },
   { name: "Indices", value: 12 },
+  { name: "ETFs", value: 8 },
 ];
 export const revenueSeries = Array.from({ length: 12 }, (_, i) => ({
   month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i],

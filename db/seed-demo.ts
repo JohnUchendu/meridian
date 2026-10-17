@@ -1,17 +1,14 @@
 // Creates a demo CLIENT user (not admin) with sample balances and
 // transactions so you can see the client-facing dashboard populated.
 // Run: npm run db:seed-demo
-import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
+import { sql } from "./client";
+import { closeLocalDb } from "./local";
 
 const DEMO_EMAIL = process.env.DEMO_EMAIL ?? "demo@meridian.example";
 const DEMO_PASSWORD = process.env.DEMO_PASSWORD ?? "demopassword123";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not set");
-  const sql = neon(url);
-
   const existing = await sql`select id from users where email = ${DEMO_EMAIL}`;
   let userId: string;
 
@@ -41,12 +38,12 @@ async function main() {
   // Seed a few sample transactions so /dashboard and /dashboard/deposit
   // history aren't empty.
   const existingTx = await sql`select count(*)::int as count from transactions where user_id = ${userId}`;
-  if (existingTx[0].count === 0) {
+  if (Number(existingTx[0].count) === 0) {
     await sql`
       insert into transactions (user_id, type, amount, method, status) values
-      (${userId}, 'Deposit', 5000.00, 'Card', 'Completed'),
-      (${userId}, 'Withdrawal', 1200.00, 'Bank wire', 'Completed'),
-      (${userId}, 'Deposit', 2500.00, 'Crypto', 'Pending')
+      (${userId}, 'Deposit', 5000.00, 'QR code', 'Successful'),
+      (${userId}, 'Withdrawal', 1200.00, 'Bank wire', 'Successful'),
+      (${userId}, 'Deposit', 2500.00, 'QR code', 'Pending')
     `;
     console.log("Seeded sample transactions.");
   }
@@ -54,7 +51,10 @@ async function main() {
   console.log(`\nDemo login: ${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => closeLocalDb())
+  .catch(async (err) => {
+    console.error(err);
+    await closeLocalDb();
+    process.exit(1);
+  });

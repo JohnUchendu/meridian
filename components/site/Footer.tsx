@@ -14,19 +14,18 @@ export function Footer() {
               <span className="font-bold">Meridian<span className="gold-gradient"> Capital</span></span>
             </Link>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              A premium global brokerage offering Forex, CFDs and managed investment products with institutional-grade execution.
+              A premium investment platform offering global markets and professionally managed portfolios with institutional-grade execution.
             </p>
             <p className="mt-4 text-xs text-muted-foreground/70">
-              CFDs are complex instruments and come with a high risk of losing money rapidly due to leverage. 76.3% of retail investor accounts lose money when trading CFDs with this provider.
+              Investing involves risk, including the possible loss of principal. Past performance is not indicative of future results.
             </p>
           </div>
           <FooterCol title="Markets" links={[["/markets","Forex"],["/markets","Commodities"],["/markets","Stocks"],["/markets","Crypto CFDs"],["/markets","Indices"]]} />
-          <FooterCol title="Company" links={[["/about","About"],["/investments","Investments"],["/education","Education"],["/contact","Contact"]]} />
+          <FooterCol title="Company" links={[["/about","About"],["/investments","Investments"],["/pricing","Pricing"],["/contact","Contact"]]} />
           <FooterCol title="Legal" links={[["/","Terms"],["/","Privacy"],["/","Risk Disclosure"],["/","Regulation"]]} />
         </div>
-        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
+        <div className="mt-10 border-t border-border/60 pt-6 text-xs text-muted-foreground">
           <div>© {new Date().getFullYear()} Meridian Capital Ltd. All rights reserved.</div>
-          <div>Regulated in multiple jurisdictions. Registered No. 000-11234.</div>
         </div>
       </div>
     </footer>

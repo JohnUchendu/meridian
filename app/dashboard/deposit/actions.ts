@@ -7,8 +7,9 @@ import { sendTransactionEmail } from "@/lib/email";
 
 const schema = z.object({
   type: z.enum(["Deposit", "Withdrawal"]),
-  amount: z.coerce.number().positive(),
-  method: z.enum(["Card", "Bank wire", "Crypto"]),
+  amount: z.coerce.number().positive().max(10_000_000),
+  method: z.string().optional(),
+  reference: z.string().max(120).optional(),
 });
 
 export type TxState = { error?: string; success?: boolean } | undefined;
@@ -20,26 +21,32 @@ export async function submitTransactionAction(_prev: TxState, formData: FormData
   const parsed = schema.safeParse({
     type: formData.get("type"),
     amount: formData.get("amount"),
-    method: formData.get("method"),
+    method: formData.get("method") ?? undefined,
+    reference: formData.get("reference") ?? undefined,
   });
   if (!parsed.success) return { error: "Please enter a valid amount." };
 
-  const { type, amount, method } = parsed.data;
+  const { type, amount } = parsed.data;
+
+  // Deposits are QR-only. Withdrawals are paid out by bank transfer or crypto.
+  const method =
+    type === "Deposit"
+      ? "QR code"
+      : parsed.data.method === "Crypto"
+        ? "Crypto"
+        : "Bank wire";
+  const reference = parsed.data.reference?.trim() || null;
 
   if (type === "Withdrawal" && Number(user.balance_available) < amount) {
     return { error: "Insufficient available balance." };
   }
 
+  // Pending until an administrator reviews it. Balances are only moved when
+  // the transaction is marked successful from the admin console.
   await sql`
-    insert into transactions (user_id, type, amount, method, status)
-    values (${user.id}, ${type}, ${amount}, ${method}, 'Pending')
+    insert into transactions (user_id, type, amount, method, reference, status)
+    values (${user.id}, ${type}, ${amount}, ${method}, ${reference}, 'Pending')
   `;
-
-  if (type === "Deposit") {
-    await sql`update users set balance_available = balance_available + ${amount} where id = ${user.id}`;
-  } else {
-    await sql`update users set balance_available = balance_available - ${amount} where id = ${user.id}`;
-  }
 
   await sendTransactionEmail(user.email as string, user.first_name as string, type, amount).catch((err) =>
     console.error("transaction email failed", err),
@@ -47,5 +54,6 @@ export async function submitTransactionAction(_prev: TxState, formData: FormData
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/deposit");
+  revalidatePath("/admin/deposits");
   return { success: true };
 }

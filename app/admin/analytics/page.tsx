@@ -4,8 +4,10 @@ import { revenueSeries, allocation } from "@/lib/market-data";
 import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
 
 export default async function Analytics() {
-  const [{ count: totalUsers }] = await sql`select count(*)::int as count from users where role = 'client'`;
-  const [{ count: verifiedUsers }] = await sql`select count(*)::int as count from users where kyc_status = 'Verified'`;
+  const userCountRows = await sql`select count(*)::int as count from users where role = 'client'`;
+  const verifiedCountRows = await sql`select count(*)::int as count from users where kyc_status = 'Verified'`;
+  const totalUsers = Number(userCountRows[0]?.count ?? 0);
+  const verifiedUsers = Number(verifiedCountRows[0]?.count ?? 0);
   const retention = totalUsers > 0 ? ((verifiedUsers / totalUsers) * 100).toFixed(1) : "0.0";
 
   return (
@@ -17,7 +19,7 @@ export default async function Analytics() {
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        Charts below use demo revenue/volume series (no real trading ledger exists yet).
+        Charts below use illustrative revenue/volume series until the investment ledger is wired up.
       </p>
       <AnalyticsCharts revenueSeries={revenueSeries} allocation={allocation} />
     </div>

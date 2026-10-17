@@ -1,33 +1,52 @@
-// Creates (or promotes) an admin user. Run after db:push:
-//   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=changeme npx tsx db/seed-admin.ts
-import { neon } from "@neondatabase/serverless";
+// Creates (or promotes) the platform admin account.
+// Run: npm run db:seed-admin
+//
+// Credentials come from ADMIN_EMAIL / ADMIN_PASSWORD in .env.local (loaded by
+// the npm script). ADMIN_EMAIL defaults to the address this deployment was
+// commissioned with.
 import bcrypt from "bcryptjs";
+import { sql } from "./client";
+import { closeLocalDb } from "./local";
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "sirray812@digdig.org";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_FIRST_NAME = process.env.ADMIN_FIRST_NAME ?? "Sirray";
+const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME ?? "Admin";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
-  if (!url) throw new Error("DATABASE_URL is not set");
-  if (!email || !password) throw new Error("Set ADMIN_EMAIL and ADMIN_PASSWORD env vars");
+  if (!ADMIN_PASSWORD || ADMIN_PASSWORD.length < 12) {
+    throw new Error(
+      "Set ADMIN_PASSWORD (12+ characters) in .env.local before seeding the admin account.",
+    );
+  }
 
-  const sql = neon(url);
-  const existing = await sql`select id from users where email = ${email}`;
+  const existing = await sql`select id from users where email = ${ADMIN_EMAIL}`;
 
   if (existing.length > 0) {
-    await sql`update users set role = 'admin' where email = ${email}`;
-    console.log(`Promoted existing user ${email} to admin.`);
+    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+    await sql`
+      update users set
+        role = 'admin',
+        password_hash = ${passwordHash},
+        kyc_status = 'Verified'
+      where email = ${ADMIN_EMAIL}
+    `;
+    console.log(`Promoted existing user ${ADMIN_EMAIL} to admin and reset the password.`);
     return;
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
+  const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
   await sql`
     insert into users (first_name, last_name, email, password_hash, role, kyc_status)
-    values ('Admin', 'User', ${email}, ${passwordHash}, 'admin', 'Verified')
+    values (${ADMIN_FIRST_NAME}, ${ADMIN_LAST_NAME}, ${ADMIN_EMAIL}, ${passwordHash}, 'admin', 'Verified')
   `;
-  console.log(`Created admin user ${email}.`);
+  console.log(`Created admin user ${ADMIN_EMAIL}.`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => closeLocalDb())
+  .catch(async (err) => {
+    console.error(err);
+    await closeLocalDb();
+    process.exit(1);
+  });

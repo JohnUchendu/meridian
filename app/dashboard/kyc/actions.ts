@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 // Hard cap on uploaded KYC files. Neon (Postgres) can technically store much
 // larger bytea values, but this keeps query payloads small and prevents
 // someone from parking multi-hundred-MB files in the same table as users.
-export const MAX_KYC_FILE_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_KYC_FILE_BYTES = 5 * 1024 * 1024; // 5MB
 
 const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 

@@ -66,7 +66,6 @@ export function EditUserForm(props: {
                 <SelectItem value="Starter">Starter</SelectItem>
                 <SelectItem value="Standard">Standard</SelectItem>
                 <SelectItem value="Professional">Professional</SelectItem>
-                <SelectItem value="VIP">VIP</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -14,7 +14,7 @@ const schema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email(),
-  tier: z.enum(["Starter", "Standard", "Professional", "VIP"]),
+  tier: z.enum(["Starter", "Standard", "Professional"]),
   kycStatus: z.enum(["Not Started", "In Review", "Verified", "Rejected"]),
   role: z.enum(["client", "admin"]),
   balanceAvailable: z.coerce.number().min(0),

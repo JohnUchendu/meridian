@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
-  Bell, CreditCard, LayoutDashboard, LineChart,
+  Bell, CreditCard, LayoutDashboard,
   LogOut, PieChart, Settings, ShieldCheck, TrendingUp, Wallet, Menu,
   FileText, HelpCircle,
 } from "lucide-react";
@@ -15,7 +15,6 @@ import { logoutAction } from "@/app/auth/actions";
 const nav: { section: string; items: { to: string; label: string; icon: LucideIcon }[] }[] = [
   { section: "Overview", items: [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/dashboard/trading", label: "Trading", icon: LineChart },
     { to: "/dashboard/portfolio", label: "Portfolio", icon: PieChart },
   ]},
   { section: "Finances", items: [

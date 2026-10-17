@@ -14,13 +14,14 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
   if (!user) notFound();
 
   const txCount = await sql`select count(*)::int as count from transactions where user_id = ${id}`;
+  const transactionCount = Number(txCount[0]?.count ?? 0);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{user.first_name as string} {user.last_name as string}</h1>
         <p className="text-sm text-muted-foreground">
-          {user.email as string} · Joined {new Date(user.created_at as string).toLocaleDateString()} · {txCount[0].count} transactions
+          {user.email as string} · Joined {new Date(user.created_at as string).toLocaleDateString()} · {transactionCount} transactions
         </p>
       </div>
       <Card className="border-border/60 bg-card/60">

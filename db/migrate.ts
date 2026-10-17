@@ -1,20 +1,18 @@
-// Applies db/schema.sql to the Neon database pointed at by DATABASE_URL.
+// Applies db/schema.sql to the configured database.
 // Run: npm run db:push
+//
+// DATABASE_URL (Neon) is used when present; otherwise the embedded local
+// database in .pglite/ is migrated.
 import { readFileSync } from "node:fs";
-import { neon } from "@neondatabase/serverless";
+import { sql } from "./client";
+import { closeLocalDb } from "./local";
+import { splitStatements } from "./split-statements";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not set");
-  const sql = neon(url);
   const schema = readFileSync(new URL("./schema.sql", import.meta.url), "utf8");
 
-  // Neon's http driver runs one statement per call, so split on semicolons
-  // (fine here since schema.sql has no semicolons inside string literals).
-  const statements = schema
-    .split(";")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  // One statement per call keeps this compatible with Neon's HTTP driver.
+  const statements = splitStatements(schema);
 
   for (const stmt of statements) {
     await sql(stmt);
@@ -23,7 +21,10 @@ async function main() {
   console.log("Schema applied.");
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => closeLocalDb())
+  .catch(async (err) => {
+    console.error(err);
+    await closeLocalDb();
+    process.exit(1);
+  });

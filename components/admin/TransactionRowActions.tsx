@@ -16,11 +16,12 @@ export function TransactionRowActions({ txId }: { txId: string }) {
         disabled={pending}
         className="border-success/40 text-success"
         onClick={() => startTransition(async () => {
-          await approveTransactionAction(txId);
-          toast.success("Approved");
+          const result = await approveTransactionAction(txId);
+          if (result.ok) toast.success("Marked successful");
+          else toast.error(result.error ?? "Could not update the transaction");
         })}
       >
-        <Check className="h-4 w-4" />
+        <Check className="mr-1 h-3.5 w-3.5" /> Successful
       </Button>
       <Button
         size="sm"
@@ -28,11 +29,12 @@ export function TransactionRowActions({ txId }: { txId: string }) {
         disabled={pending}
         className="border-destructive/40 text-destructive"
         onClick={() => startTransition(async () => {
-          await rejectTransactionAction(txId);
-          toast.error("Rejected");
+          const result = await rejectTransactionAction(txId);
+          if (result.ok) toast.error("Transaction rejected");
+          else toast.error(result.error ?? "Could not update the transaction");
         })}
       >
-        <X className="h-4 w-4" />
+        <X className="mr-1 h-3.5 w-3.5" /> Reject
       </Button>
     </>
   );
